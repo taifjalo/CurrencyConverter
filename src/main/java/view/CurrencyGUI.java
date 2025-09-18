@@ -1,0 +1,86 @@
+package view;
+
+import controller.CurrencyController;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import model.Currency;
+import model.CurrencyModel;
+
+public class CurrencyGUI extends Application {
+
+    private CurrencyModel model = new CurrencyModel();
+    private CurrencyController controller = new CurrencyController();
+
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("Currency Converter");
+
+        // Labels
+        Label instructions = new Label("Enter amount, select currencies, then press Convert.");
+        Label amountLabel = new Label("Amount:");
+        Label sourceLabel = new Label("From:");
+        Label targetLabel = new Label("To:");
+        Label resultLabel = new Label("Result:");
+
+        // Text fields
+        TextField amountField = new TextField();
+        TextField resultField = new TextField();
+        resultField.setEditable(false);
+
+        // Choice boxes
+        ChoiceBox<Currency> sourceBox = new ChoiceBox<>();
+        ChoiceBox<Currency> targetBox = new ChoiceBox<>();
+        sourceBox.getItems().addAll(model.getCurrencyList());
+        targetBox.getItems().addAll(model.getCurrencyList());
+
+        // Button
+        Button convertButton = new Button("Convert");
+
+        // Layout
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(15));
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        grid.add(instructions, 0, 0, 2, 1);
+        grid.add(amountLabel, 0, 1);
+        grid.add(amountField, 1, 1);
+        grid.add(sourceLabel, 0, 2);
+        grid.add(sourceBox, 1, 2);
+        grid.add(targetLabel, 0, 3);
+        grid.add(targetBox, 1, 3);
+        grid.add(resultLabel, 0, 4);
+        grid.add(resultField, 1, 4);
+        grid.add(convertButton, 1, 5);
+
+        // Event handling
+        convertButton.setOnAction(e -> {
+            try {
+                double amount = Double.parseDouble(amountField.getText());
+                Currency source = sourceBox.getValue();
+                Currency target = targetBox.getValue();
+                double result = controller.convert(amount, source, target);
+                resultField.setText(String.format("%.2f", result));
+            } catch (NumberFormatException ex) {
+                controller.showError("Please enter a valid numeric amount.");
+            } catch (Exception ex) {
+                controller.showError(ex.getMessage());
+            }
+        });
+
+        // Scene
+        Scene scene = new Scene(grid, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
