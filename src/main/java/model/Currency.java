@@ -6,9 +6,9 @@ public class Currency {
     private Double rateToUSD;   /// Exchange rate to USD
     private String abbreviation;/// Currency abbreviation (e.g., 1.0 for USD, 0.85 for EUR)
 
-    Currency(String name, Double rateToUSD, String abbreviation) {
+    Currency(String abbreviation, String name, Double rate) {
         this.name = name;
-        this.rateToUSD = rateToUSD;
+        this.rateToUSD = rate;
         this.abbreviation = abbreviation;
     }
 
