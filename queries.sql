@@ -1,4 +1,4 @@
-SELECT * FROM Currency;
-SELECT * FROM Currency WHERE  abbreviation = 'EUR';
-SELECT COUNT(*) FROM Currency;
-SELECT * FROM Currency ORDER BY rateToUSD DESC LIMIT 1;
+SELECT * FROM currency;
+SELECT * FROM currency WHERE  abbreviation = 'EUR';
+SELECT COUNT(*) FROM currency;
+SELECT * FROM currency ORDER BY rateToUSD DESC LIMIT 1;

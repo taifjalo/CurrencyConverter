@@ -1,13 +1,13 @@
-DROP TABLE IF EXISTS Currency;
+DROP TABLE IF EXISTS currency;
 USE currencydb;
 
-CREATE TABLE Currency (
+CREATE TABLE currency (
     abbreviation VARCHAR(50) NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     rateToUSD DECIMAL(10,4) NOT NULL
 );
 
-INSERT INTO Currency (abbreviation, name, rateToUSD) VALUES
+INSERT INTO currency (abbreviation, name, rateToUSD) VALUES
     ('USD', 'US Dollar', 1.0000),
     ('EUR', 'Euro', 0.9200),
     ('GBP', 'British Pound', 0.8100),
@@ -19,5 +19,5 @@ INSERT INTO Currency (abbreviation, name, rateToUSD) VALUES
 
 DROP USER IF EXISTS 'appuser'@'localhost';
 CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'password';
-GRANT SELECT, INSERT, UPDATE, DELETE ON currencyDB.* TO 'appuser'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON currencydb.* TO 'appuser'@'localhost';
 FLUSH PRIVILEGES;

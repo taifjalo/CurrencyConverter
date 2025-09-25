@@ -1,18 +1,20 @@
 package view;
 
 import controller.CurrencyController;
+import dao.CurrencyDao;
+import entity.Currency;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import model.Currency;
-import model.CurrencyModel;
+
+import java.util.List;
 
 public class CurrencyGUI extends Application {
 
-    private CurrencyModel model = new CurrencyModel();
+    private CurrencyDao currencyDao = new CurrencyDao();
     private CurrencyController controller = new CurrencyController();
 
     @Override
@@ -34,8 +36,15 @@ public class CurrencyGUI extends Application {
         // Choice boxes
         ChoiceBox<Currency> sourceBox = new ChoiceBox<>();
         ChoiceBox<Currency> targetBox = new ChoiceBox<>();
-        sourceBox.getItems().addAll(model.getCurrencyList());
-        targetBox.getItems().addAll(model.getCurrencyList());
+
+        // Load currencies from database
+        List<Currency> currencyList = currencyDao.getAllCurrencies();
+        if (currencyList.isEmpty()) {
+            controller.showError("No currencies found in the database!");
+        } else {
+            sourceBox.getItems().addAll(currencyList);
+            targetBox.getItems().addAll(currencyList);
+        }
 
         // Button
         Button convertButton = new Button("Convert");
@@ -72,15 +81,12 @@ public class CurrencyGUI extends Application {
             }
         });
 
-        // Scene
         Scene scene = new Scene(grid, 400, 300);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
-        launch(args);
+        launch();
     }
 }
