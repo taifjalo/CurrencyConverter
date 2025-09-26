@@ -38,7 +38,7 @@ public class CurrencyGUI extends Application {
         ChoiceBox<Currency> targetBox = new ChoiceBox<>();
 
         // Load currencies from database
-        List<Currency> currencyList = currencyDao.getAllCurrencies();
+        List<Currency> currencyList = currencyDao.findAll();
         if (currencyList.isEmpty()) {
             controller.showError("No currencies found in the database!");
         } else {
@@ -81,10 +81,33 @@ public class CurrencyGUI extends Application {
             }
         });
 
+        // Add this after convertButton
+        Button btnAddCurrency = new Button("Add Currency");
+        btnAddCurrency.setOnAction(e -> {
+            AddCurrencyGUI addView = new AddCurrencyGUI(currencyDao);
+            addView.showAndWait();
+            // After closing the add window, refresh the list
+            sourceBox.getItems().setAll(currencyDao.findAll());
+            targetBox.getItems().setAll(currencyDao.findAll());
+        });
+
+
+        grid.add(btnAddCurrency, 1, 6);
+
         Scene scene = new Scene(grid, 400, 300);
         stage.setScene(scene);
         stage.show();
+
+
+
+
+
+
+
+
     }
+
+
 
     public static void main(String[] args) {
         launch();

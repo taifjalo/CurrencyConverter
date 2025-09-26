@@ -1,55 +1,52 @@
 package dao;
 
 import entity.Currency;
-import datasource.MariaDbConnection;
+import jakarta.persistence.EntityManager;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class CurrencyDao {
 
-    public List<Currency> getAllCurrencies() {
-        Connection conn = MariaDbConnection.getConnection();
-        List<Currency> currencies = new ArrayList<>();
-        String sql = "SELECT abbreviation, name, rateToUSD FROM currency";
 
+    public void addOne(Currency currency) {
+        EntityManager em = datasource.MariaDbJpaConnection.getInstance();
         try {
-            Statement s = conn.createStatement();
-            ResultSet rs = s.executeQuery(sql);
-            while (rs.next()) {
-                currencies.add(new Currency(
-                        rs.getString("abbreviation"),
-                        rs.getString("name"),
-                        rs.getDouble("rateToUSD")
-                ));
-            }
-
-        } catch (SQLException e) {
+            em.getTransaction().begin();
+            em.persist(currency);   // INSERT INTO employee ...
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+             em.close(); // we do not close the connection because it is a singleton
         }
 
-        return currencies;
     }
 
-    public double getRate(String abbreviation) {
-        Connection conn = MariaDbConnection.getConnection();
-        String sql = "SELECT rateToUSD FROM currency WHERE abbreviation = ?";
+    public List<Currency> findAll() {
+        EntityManager em = datasource.MariaDbJpaConnection.getInstance();
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, abbreviation);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getDouble("rateToUSD");
-            }
-
-        } catch (SQLException e) {
+            return em.createQuery("select e from Currency e", Currency.class).getResultList();  // SELECT * FROM employe
+        } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
-        }
+            return null;
+        } finally {
+            em.close(); // we do not close the connection because it is a singleton
+}
+    }
 
-        return -1; // indicates error
+    public Currency findOne(String abbreviation) {
+        EntityManager em = datasource.MariaDbJpaConnection.getInstance();
+        try {
+            return em.find(Currency.class, abbreviation); // SELECT * FROM employee WHERE abbreviation (id) = ?
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close(); // we do not close the connection because it is a singleton
+        }
     }
 }

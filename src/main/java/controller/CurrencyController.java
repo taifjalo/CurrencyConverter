@@ -11,8 +11,8 @@ public class CurrencyController {
     public double convert(double amount, Currency source, Currency target) {
         if (source == null || target == null) return -1;
 
-        double sourceRate = dao.getRate(source.getAbbreviation());
-        double targetRate = dao.getRate(target.getAbbreviation());
+        double sourceRate = dao.findOne(source.getAbbreviation()).getRateToUSD();
+        double targetRate = dao.findOne(target.getAbbreviation()).getRateToUSD();
 
         if (sourceRate <= 0 || targetRate <= 0) return -1;
 

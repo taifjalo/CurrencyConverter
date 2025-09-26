@@ -1,7 +1,8 @@
+import javafx.application.Application;
 import view.CurrencyGUI;
 
 public class Main {
     public static void main(String[] args) {
-        CurrencyGUI.launch(CurrencyGUI.class);
+        Application.launch(CurrencyGUI.class, args);
     }
 }
